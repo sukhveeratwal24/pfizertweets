@@ -14,6 +14,13 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+from sklearn.svm import LinearSVC
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import confusion_matrix, classification_report
+
 #loading the dataset
 df = pd.read_csv('vaccination_tweets.csv', encoding='latin-1')
 #information about the data set/ we can see that there are some missing values in unser location/description
@@ -142,4 +149,17 @@ def lemmatizer(text):
 df2['lemmatized'] = df2['No_stopwords'].apply(lambda x: lemmatizer(x))
 df2.head()
 
+# add lemmatized text to main df
+df['text'] = df2['lemmatized']
 
+#define the data
+x = df['text']
+y = df['sentiment']
+
+print(len(x), len(y))
+
+#train/split data
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state= 34)
+
+print(len(x_train), len(y_train))
+print(len(x_test), len(y_test))
